@@ -1,25 +1,15 @@
-# Lab: Fundamentals of Microsoft Teams development
-
-In this lab, you will prepare your computer for developing Microsoft Teams apps, learn the steps to package and test your application, build a basic Microsoft Teams bot and a Microsoft Teams tab.
-
-## In this lab
-
-1. [Create and test a basic Microsoft Teams app using Yeoman](#exercise1)
-1. [Create and test a basic Microsoft Teams bot using Visual Studio](#exercise2)
-1. [Call the Microsoft Graph API inside a tab](#exercise3)
-
-
-<a name="exercise1"></a>
+# <a name="exercise1"></a>
 
 ## Exercise 1: Create and test a basic Microsoft Teams app using Yeoman
 
-This exercise introduces the Yeoman generator and its capabilities for scaffolding a project and testing its functionality. In this exercise, you will create a basic Microsoft Teams App.
+이 과정은 Yeoman generator를 소개하고 이를 이용하여 프로젝트를 스캐폴딩하고 테스트까지 하는 내용을 다룹니다. 이 과정에서는 기본적인 Microsoft 팀즈앱을 만들게 될 것입니다.
 
-1. Open a **Command Prompt** window.
+1. **Command Prompt**창을 엽니다.
 
-1. Change to the directory where you will create the tab.
+1. 탭을 만들 디렉토리로 이동합니다.
 
-     > **Note:** Directory paths can become quite long after node modules are imported.  It is recommended that you use a directory name without spaces in it and create it in the root folder of your drive.  This will make working with the solution easier in the future and protect you from potential issues associated with long file paths. In this example, you will use `c:\Dev` as the working directory.
+     > **Note:** node 모듈이 임포트 된 후 디렉토리 경로가 굉장히 길어질 수 있습니다. 그러므로 디렉토리 이름에 공백을 사용하지 않도록 하고, 또한 드라이브의 루트폴더에 프로젝트를 만드는 것을 추천합니다. 이러한 구성이 장래에 
+     Directory paths can become quite long after node modules are imported.  It is recommended that you use a directory name without spaces in it and create it in the root folder of your drive.  This will make working with the solution easier in the future and protect you from potential issues associated with long file paths. In this example, you will use `c:\Dev` as the working directory.
 
 1. Type `md teams-app1` and press **Enter**.
 
