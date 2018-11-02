@@ -1,8 +1,4 @@
-# Lab: Fundamentals of Microsoft Teams development
-
-In this lab, you will prepare your computer for developing Microsoft Teams apps, learn the steps to package and test your application, build a basic Microsoft Teams bot and a Microsoft Teams tab.
-
-## Prerequisites
+# Prerequisites
 
 마이크로소프트 팀즈 앱을 개발하기 위해서는 오피스 365 테넌트와 개발용 워크스테이션이 필요합니다.
 
