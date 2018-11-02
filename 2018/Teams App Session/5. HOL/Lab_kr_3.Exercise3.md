@@ -335,7 +335,7 @@
       let token = "";
 
       this.setState({ graphData: "Loading..." });
-      if (token == null) {
+      if (token == "") {
         microsoftTeams.authentication.authenticate({
           url: "/auth.html",
           width: 400,
