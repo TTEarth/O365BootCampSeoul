@@ -334,8 +334,7 @@
     private getGraphData() {
       let token = "";
 
-      let graphElement = document.getElementById("graph");
-      graphElement!.innerText = "Loading...";
+      this.setState({ graphData: "Loading..." });
       if (token == null) {
         microsoftTeams.authentication.authenticate({
           url: "/auth.html",
@@ -372,7 +371,7 @@
       req.setRequestHeader("Accept", "application/json;odata.metadata=minimal;");
       req.send();
       var result = JSON.parse(req.responseText);
-      document.getElementById("graph")!.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+      this.setState({ graphData: JSON.stringify(result, null, 2) });
     }
     ```
 
