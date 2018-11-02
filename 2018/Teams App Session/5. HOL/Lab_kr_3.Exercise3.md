@@ -1,63 +1,52 @@
-# Lab: Fundamentals of Microsoft Teams development
-
-In this lab, you will prepare your computer for developing Microsoft Teams apps, learn the steps to package and test your application, build a basic Microsoft Teams bot and a Microsoft Teams tab.
-
-## In this lab
-
-1. [Create and test a basic Microsoft Teams app using Yeoman](#exercise1)
-1. [Create and test a basic Microsoft Teams bot using Visual Studio](#exercise2)
-1. [Call the Microsoft Graph API inside a tab](#exercise3)
-
-
-<a name="exercise3"></a>
+# <a name="exercise3"></a>
 
 ## Exercise 3: Call the Microsoft Graph API inside a tab
 
-This section of the lab will extend the tab created in Exercise 1 to call the Microsoft Graph API. The exercise contains many code files. The **Lab Files** folder contains files that contain the code and are provided to facilitate copying the code.
+이번 핸즈온랩 세션은 Exercise 1 에서 만들었던 탭을 좀 더 확장하여 Microsoft Graph API 를 호출하도록 할 것입니다. 이번 Exercise 는 상당히 많은 양의 코드가 사용됩니다. **Lab Files** 폴더에 코드파일이 있으니, 그 파일을 열어서 코드를 복사하시길 바랍니다.
 
 ### Run the ngrok secure tunnel application
 
-1. Open a new **Command Prompt** window.
+1. 새로운 **Command Prompt** 창을 엽니다.
 
-1. Change to the directory that contains the **ngrok.exe** application.
+1. **ngrok.exe** 프로그램이 있는 디렉토리로 이동합니다.
 
-1. Run the command `ngrok http 3007`.
+1. 다음 명령어를 실행합니다. `ngrok http 3007`.
 
-1. The **ngrok** application will fill the entire prompt window. Make note of the forwarding address using HTTPS. This address is required in the next step.
+1. ngrok 프로그램이 전체 프롬프트 창을 채울 것입니다. 이 때 HTTP 를 사용하는 포워딩 주소를 확인해 주십시오. 이 주소가 다음 단계에서 필요합니다.
 
-1. Minimize the ngrok command prompt window. It is no longer referenced in this exercise, but it must remain running.
+1. ngrok 이 실행중인 프롬프트 창을 최소화 해두십시오. 이번 연습에서는 더이상 참고할 일이 없을 것입니다. 최소화 된 상태로 계속 실행중이어야 합니다.
 
     ![Screenshot of ngrok with local host highlighted.](Images/Exercise1-04.png)
 
 ### Register an application in AAD
 
-To enable an application to call the Microsoft Graph API, an application registration is required. This lab uses the [Azure Active Directory v2.0 endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare).
+이 프로그램이 Microsoft Graph API를 호출하게 하려면, 어플리케이션 등록이 필요합니다. 이 핸즈온랩에서는 [Azure Active Directory v2.0 endpoint](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare) 을 사용합니다,
 
-1. Open the [Application Registration Portal](https://apps.dev.microsoft.com).
+1. [Application Registration Portal](https://apps.dev.microsoft.com)에 접속합니다.
 
-1. Log in with a work or school account.
+1. **a work or school account**을 이용해 로그인 하십시오.
 
-1. Select **Add an app**.
+1. **Add an app**을 선택합니다.
 
-1. Complete the **Register your application** section by entering an application name and contact email. Clear the checkbox for **Guided Setup**. Select **Create**.
+1. 어플리케이션 이름과 연락처 메일을 입력하여 **Register your application** 섹션의 입력을 끝마칩니다. **Guided Setup** 의 체크박스를 해제하고, **Create** 를 클릭합니다.
 
     ![Screenshot of app registration page.](Images/Exercise3-01.png)
 
-1. On the registration page, in the **Platforms** section, select **Add Platform**.
+1. 등록 페이지에서, **Platforms** 섹션안에 있는 **Add Platform** 을 선택합니다.
 
     ![Screenshot of app registration page with platform highlighted.](Images/Exercise3-02.png)
 
-1. In the **Add Platform** dialog, select **Web**.
+1. **Add Platform** 대화창에서 **Web**을 선택합니다.
 
-1. Using the hostname from ngrok, enter a **Redirect URL** to the **auth.html** file.
+1. ngrok 에서 얻은 호스트네임을 이용해 **Redirect URL** 주소가 **auth.html**으로 끝나도록 입력합니다.
 
     ```
     https://[replace-this].ngrok.io/auth.html
     ```
 
-1. Select the **Add URL** button.
+1. **Add URL** 버튼을 선택합니다.
 
-1. Using the hostname from ngrok, enter a **Redirect URL** to the **adminconsent.html** file.
+1. ngrok 에서 얻은 호스트네임을 이용해 **Redirect URL** 주소가 **adminconsent.html**으로 끝나도록 입력합니다
 
     ```
     https://[replace-this].ngrok.io/adminconsent.html
@@ -65,29 +54,29 @@ To enable an application to call the Microsoft Graph API, an application registr
 
     ![Screenshot of properties page for application registration portal.](Images/Exercise3-03.png)
 
-1. Select **Save**.
+1. **Save**를 선택합니다.
 
-1. Make note of the application ID. This value is used in the authentication / token code.
+1. application ID 를 따로 적어두십시오. 이 값이 나중에 authentication / token 코드에서 사용됩니다.
 
 ### Request permission to read groups
 
-1. Move to the **Microsoft Graph Permissions** section.
+1. **Microsoft Graph Permissions** 섹션으로 이동합니다.
 
-1. Next to **Delegated Permissions**, select the **Add** button.
+1. **Delegated Permissions** 옆에 있는 **Add** 버튼을 선택합니다.
 
-1. In the **Select Permission** dialog, scroll down and select **Group.Read.All**. Select **OK**.
+1. **Select Permission** 대화창에서, 아래쪽으로 스크롤 다운하여 **Group.Read.All**을 선택합니다. **OK**를 클릭합니다.
 
       ![Screenshot of permissions menu in application registration portal.](Images/Exercise3-05.png)
 
-1. Select **Save**.
+1. **Save**를 클릭합니다.
 
 ### Add the Microsoft Authentication Library (MSAL) to the project
 
-1. Open a **Command Prompt** window.
+1. 새로운 **Command Prompt** 창을 엽니다.
 
-1. Change to the directory containing the tab application.
+1. 탭 어플리케이션이 있는 디렉토리로 이동합니다.
 
-1. Run the following command:
+1. 아래의 명령어를 수행해 주십시오:
 
     ```shell
     npm install msal
@@ -95,13 +84,15 @@ To enable an application to call the Microsoft Graph API, an application registr
 
 ### Configure tab when added to channel
 
-The tab in this exercise can be configured to read information from Microsoft Graph API about the current member or about the group in which the channel exists. Perform the following to update the tab configuration.
+이 Exercise 의 탭은 Microsoft Graph API를 통해 현재 사용자와 이 채널이 위치한 그룹에 대한 정보를 읽어 오도록 설정될 것입니다. 아래의 과정을 통해 탭 설정을 업데이트 해주세요.
 
-**Note:** These steps assume that the application created in Exercise 1 is named **teams-app-1**. Paths listed in this section are relative to the **src/app/** folder in the generated application.
+**Note:** 아래의 과정에서는 Exercise 1 에서 만든 탭의 이름이 **teams-app-1** 인 것으로 가정하고 있습니다. 이 섹션의 경로들은 생성된 프로그램의 **src/app/** 폴더에 위치하고 있습니다.
 
-1. Open the file **scripts/teamsApp1TabConfig.tsx**.
-1. At the top of the file is an `import` statement with several components from `msteams-ui-components-react`. Add `Dropdown` to the list of components.
-1. Locate the `IteamsApp1TabConfigState` class. Rename the `value` property to `selectedConfiguration`.
+1. **scripts/teamsApp1TabConfig.tsx** 파일을 여십시오.
+
+1. 파일의 제일 위에는 `import` 선언문이 있으며, `msteams-ui-components-react` 이 제공하는 몇가지 컴포넌트들이 나열되어 있습니다. 이 컴포넌트의 목록에 `Dropdown` 을 추가해 주십시오.
+
+1. `IteamsApp1TabConfigState` 클래스를 찾으십시오. `value` 속성의 이름을 `selectedConfiguration`으로 바꾸십시오.
 
     ```typescript
     export interface IteamsApp1TabConfigState extends ITeamsBaseComponentState {
@@ -109,7 +100,7 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     }
     ```
 
-1. Locate the `teamsApp1TabConfig` class. Create the following member variables by inserting the lines before the first method.
+1. `teamsApp1TabConfig` 클래스를 찾으십시오. 첫번째 메소드의 앞에 아래 코드라인들을 삽입하여 멤버변수들을 추가합니다.
 
     ```typescript
     configOptions = [
@@ -120,7 +111,7 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     tenantId?: string = "";
     ```
 
-1. In the `teamsApp1TabConfig` class is a method named `componentWillMount`. In this method, there is a call to `microsoftTeams.getContext`. Update the `getContext` callback to use the proper state variable, and to update the tenant id.
+1. `teamsApp1TabConfig` 클래스 안에서 `componentWillMount` 메소드를 찾으십시오. 이 메소드 안에 `microsoftTeams.getContext` 을 호출하는 부분이 있습니다. 이 `getContext` 콜백을 아래와 같이 변경하여 적절한 정적 변수를 사용하게 하고 테넌트 아이디도 업데이트 할 수 있도록 해줍니다.
 
     ```typescript
     microsoftTeams.getContext((context: microsoftTeams.Context) => {
@@ -132,7 +123,7 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     });
     ```
 
-1. In the `componentWillMount` method is a call to `microsoftTeams.settings.setSettings`. Update the parameter of this method call to use the proper state variable.
+1. `componentWillMount` 메소드 안에서 `microsoftTeams.settings.setSettings`를 호출하는 부분을 찾으십시오. 이 메소드 호출안에서 파라미터를 아래와 같이 업데이트 하여, 적절한 정적 변수를 사용할 수 있도록 해줍니다.
 
     ```typescript
     microsoftTeams.settings.setSettings({
@@ -143,7 +134,7 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     });
     ```
 
-1. Add the following snippet as a new method to the `teamsApp1TabConfig` class.
+1. `teamsApp1TabConfig` 클래스에 아래의 코드 조각을 새로운 메소드로 추가해줍니다.
 
     ```typescript
     private onConfigSelect(cfgOption: string) {
@@ -158,7 +149,7 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     }
     ```
 
-1. The tab configuration page has a button for granting admin consent. Admin consent requires the `tenantId`, which is not known until runtime, so the button has an `onclick` event. Add the following function to the `teamsApp1TabConfigure` class.
+1. 탭 설정 페이지에는 관리자의 동의를 얻기 위한 버튼이 있습니다. 관리자의 동의를 얻기 위해서는 `tenantId` 가 필요한데, 이것은 런타임 시점 이전에는 알 수 없으므로 버튼의 `onclick` 이벤트를 사용해야 합니다. 아래의 함수를 `teamsApp1TabConfigure` 클래스에 추가해 주십시오.
 
     ```typescript
     private getAdminConsent() {
@@ -172,13 +163,13 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     }
     ```
 
-1. Locate the `<PanelHeader>` element. Replace the text of the `<div>` element.
+1. `<PanelHeader>` 태그를 찾으십시오. `<div>` 태그의 텍스트를 아래와 같이 변경합니다.
 
     ```html
     <div style={styles.header}>Settings</div>
     ```
 
-1. Locate the `<PanelBody>` element. Replace the contents of the `<PanelBody>` element with the following snippet.
+1. `<PanelBody>` 태그를 찾으십시오. Replace the contents of the `<PanelBody>` 태그의 내용을 아래의 코드조각으로 교체 해주십시오.
 
     ```typescript
     <PanelBody>
@@ -199,9 +190,9 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     </PanelBody>
     ```
 
-1. Add a new file to the **web** folder named **adminconsent.html**.
+1. **web** 폴더에 새로운 파일을 추가하고 **adminconsent.html**이라고 파일명을 정해 주십시오.
 
-1. Add the following to the **adminconsent.html** file.
+1. **adminconsent.html** 파일애 아래의 내용을 추가합니다.
 
     ```html
     <!DOCTYPE html>
@@ -250,9 +241,9 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     </html>
     ```
 
-1. Add a new file to the **scripts** folder named **adminconsent.ts**.
+1. **scripts** 폴더에 새로운 파일을 추가하고 **adminconsent.ts** 이라고 파일명을 정해 주십시오.
 
-1. Add the following to the **adminconsent.ts** file. There is a token named `app-id-from-registration` that must be replaced. Use the value of the Application ID copied from the application registration page.
+1. **adminconsent.ts** 파일에 아래의 코드들을 추가해주십시오. `app-id-from-registration`이라는 이름의 토큰이 있는데 이 값은 꼭 변경해 주셔야 합니다. 어플리케이션 등록 페이지에서 복사해 두었던 어플리케이션 ID 값을 사용하시면 됩니다.
 
     ```typescript
     /**
@@ -290,37 +281,37 @@ The tab in this exercise can be configured to read information from Microsoft Gr
     }
     ```
 
-1. Locate the file **scripts/client.ts**.
+1. **scripts/client.ts** 파일을 찾아서 엽니다.
 
-1. Add the following line to the bottom of **scripts/client.ts**.
+1. **scripts/client.ts** 파일의 가장 아래쪽에 아래 코드문을 추가하십시오.
 
     ```typescript
     export * from './adminconsent';
     ```
 
-1. Following the steps from [Exercise 1]("#exercise1") , redeploy the app.
+1. [Exercise 1]("#exercise1") 에서 사용했던 방식을 다시 적용하여 , 앱을 배포해 주십시오.
 
-1. Add the tab to a channel, or update the settings of the tab in the existing channel. To update the settings of an existing tab, select the chevron next to the tab name.
+1. 채널에 탭을 추가하거나, 기존에 추가되어 있던 탭의 설정을 업데이트 해주십시오. 이미 추가되어 있는 탭의 설정을 업데이트 하려면, 탭 이름 옆에 있는 **V** 표시를 클릭하시면 됩니다.
 
     ![Screenshot of tab menu with settings highlighted.](Images/Exercise3-06.png)
 
-1. Click the **Provide administrator consent - click if Tenant Admin** button.
+1. **Provide administrator consent - click if Tenant Admin** 버튼을 클릭하십시오.
 
     ![Screenshot of teams app1 with member information displayed.](Images/Exercise3-07.png)
 
-1. Verify that the Azure Active Directory login and consent flow completes. If you log in with an account that is not a tenant administrator, the consent action will fail. Admin consent is only necessary to view the group calendar, not the member information.
+1. Azure Active Directory 에 로그인 하여 동의절차가 완료되었는지 확인해 주십시오. 만약 로그인한 계정이 테넌트 관리자가 아니라면, 동의 절차가 실패할 것입니다. 관리자의 동의를 얻는 것은 단지 그룹 캘린더를 보기위해서만 필요하고, 멤버 정보를 보기 위해 필요한 것은 아닙니다.
 
     ![Screenshot of Microsoft Teams consent page.](Images/Exercise3-08.png)
 
 ### Content page and authentication
 
-With the tab configured, the content page can now render information as selected.  Perform the following to update the tab content.
+탭이 설정되면 그에 따라 필요한 정보가 컨텐츠 페이지에 표시될 것입니다. 탭 컨텐츠를 업데이트 하기 위해 아래의 작업을 진행해 주십시오.
 
-**Note:** These steps assume that the application created in Exercise 1 is named **teams-app-1**. Paths listed in this section are relative to the **src/app/** folder in the generated application.
+**Note:** 아래의 과정에서는 Exercise 1 에서 만든 탭의 이름이 **teams-app-1** 인 것으로 가정하고 있습니다. 이 섹션의 경로들은 생성된 프로그램의 **src/app/** 폴더에 위치하고 있습니다.
 
-1. Open the file **scripts/teamsApp1Tab.tsx**.
+1. **scripts/teamsApp1Tab.tsx** 파일을 여십시오.
 
-1. Locate the `IteamsApp1TabState` interface. Replace the interface definition with the following.
+1. `IteamsApp1TabState` 인터페이스를 찾으십시오. 인터페이스 데피니션 부분을 아래의 코드로 교체해 주십시오.
 
     ```typescript
     export interface IteamsApp1TabState extends ITeamsBaseComponentState {
@@ -329,7 +320,7 @@ With the tab configured, the content page can now render information as selected
     }
     ```
 
-1. Locate the `teamsApp1Tab` class. Add the following class-level variable declarations.
+1. `teamsApp1Tab` 클래스를 찾으십시오. 아래의 클래스 변수선언은 추가해 주십시오.
 
     ```typescript
     configuration?: string;
@@ -337,7 +328,7 @@ With the tab configured, the content page can now render information as selected
     token?: string;
     ```
 
-1. Add the following function to the `teamsApp1Tab` object. This function runs in response to the button selection.
+1. `teamsApp1Tab` 객체에 아래의 함수를 추가해 주십시오. 이 함수는 버튼을 클릭했을 때 동작합니다.
 
     ```typescript
     private getGraphData() {
@@ -366,7 +357,7 @@ With the tab configured, the content page can now render information as selected
     }
     ```
 
-1. Add the following method to the `teamsApp1TabTab` class. This method uses XMLHTTP to make a call to the Microsoft Graph API and displays the result.
+1. `teamsApp1TabTab` 클래스에 아래의 메소드를 추가해 주십시오. 이 메소드는 Microsoft Graph API 를 호출하여 그 결과를 화면에 표시하기 위해 XMLHTTP 를 사용합니다.
 
     ```typescript
     public getData(token: string) {
@@ -385,7 +376,7 @@ With the tab configured, the content page can now render information as selected
     }
     ```
 
-1. Locate the `<PanelBody>` element. Replace that element with the following code snippet.
+1. `<PanelBody>` 태그를 찾으십시오. 태그를 아래의 코드 조각으로 교체하십시오.
 
     ```typescript
     <PanelBody>
@@ -398,9 +389,9 @@ With the tab configured, the content page can now render information as selected
     </PanelBody>
     ```
 
-1. Add a new file to the **web** folder named **auth.html**.
+1. **web** 폴더에 새로운 파일을 추가하고 **auth.html** 이라고 이름을 지어주십시오.
 
-1. Add the following to the **auth.html** file.
+1. **auth.html** 파일에 아래의 내용을 추가해 주십시오.
 
     ```html
     <!DOCTYPE html>
@@ -424,9 +415,9 @@ With the tab configured, the content page can now render information as selected
     </html>
     ```
 
-1. Add a new file to the **scripts** folder named **auth.ts**.
+1. **scripts** 폴더에 새로운 파일을 추가하고 **auth.ts** 이라고 이름을 지어주십시오.
 
-1. Add the following to the **auth.ts** file. Note that there is a token named `[app-id-from-registration]` that must be replaced. Use the value of the Application ID copied from the application registration page.
+1. **auth.ts** 파일에 아래 내용을 추가해 주십시오. `[app-id-from-registration]` 이라는 이름의 토큰이 꼭 변경되어야 하는 점에 유의해 주십시오. 어플리케이션 등록 페이지에서 복사해둔 어플리케이션 아이디의 값을 사용하시면 됩니다.
 
     ```typescript
     import * as Msal from 'msal';
@@ -494,12 +485,12 @@ With the tab configured, the content page can now render information as selected
     }
     ```
 
-1. Locate the file **scripts/client.ts**. Add the following line to the bottom of **scripts/client.ts**.
+1. **scripts/client.ts** 파일을 찾으십시오. **scripts/client.ts** 파일의 가장 아래쪽에 아래 코드문을 추가해 주십시오.
 
     ```typescript
     export * from './auth';
     ```
 
-1. Refresh the tab in Microsoft Teams. Select the **Get Microsoft Graph Data** button to invoke the authentication and call to **graph.microsoft.com**.
+1. 팀즈의 탭을 새로고침 해주십시오. **Get Microsoft Graph Data** 버튼을 클릭하여 인증페이지를 호출하여 로그인해주면 **graph.microsoft.com**으로 접속하여 정보를 가져옵니다.
 
     ![Screenshot of Microsoft Teams app with a display of Office 365 data exposed via Microsoft Graph.](Images/Exercise3-09.png)
