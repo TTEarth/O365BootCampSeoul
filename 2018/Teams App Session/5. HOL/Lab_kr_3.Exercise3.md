@@ -377,12 +377,12 @@
 
 1. `teamsApp1TabTab` 클래스에 `componentWillMount` 메소드를 찾으십시오. 이 메소드 안에 `microsoftTeams.getContext` 을 호출하는 부분이 있습니다. 이 `getContext` 콜백을 아래와 같이 변경해 변경해 주십시오.
 
-  ```typescript
-  microsoftTeams.getContext((context) => {
-    this.configuration = context.entityId;
-    this.groupId = context.groupId;
-  });
-  ```
+    ```typescript
+    microsoftTeams.getContext((context) => {
+      this.configuration = context.entityId;
+      this.groupId = context.groupId;
+    });
+    ```
 
 1. `<PanelBody>` 태그를 찾으십시오. 태그를 아래의 코드 조각으로 교체하십시오.
 
