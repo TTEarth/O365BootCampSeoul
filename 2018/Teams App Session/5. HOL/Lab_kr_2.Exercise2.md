@@ -62,7 +62,7 @@
 
 1. 페이지 하단에 보호 정책, 이용 약관 및 행동 강령에 동의하고 **Register** 버튼을 클릭한 후 새로 생성된 Bot에 **Connect to channels** 페이지가 나타납니다
 
-**Note** : 붉은색으로 표시되는 Bot migration 경고 메시지는 무시합니다 
+    **Note** : 붉은색으로 표시되는 Bot migration 경고 메시지는 무시합니다 
 
 1. Bot은 Microsoft Teams에 연결되어야 하므로 **Teams** 로고를 선택합니다.
 
