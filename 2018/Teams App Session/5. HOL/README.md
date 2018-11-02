@@ -6,4 +6,4 @@
 - [0. 핸즈온랩 준비](./Lab_kr_0.Prerequisites.md)
 - [1. Yeoman으로 팀즈앱 생성하여 배포하기](./Lab_kr_1.Exercise1.md)  
 - [2. 기본적인 팀즈 봇만들기](./Lab_kr_2.Exercise2.md)
-- [3. 팀즈탭 만들기](./Lab_kr_3.Exercise3.md)
+- [3. Graph API 연동하는 팀즈탭 만들기](./Lab_kr_3.Exercise3.md)
